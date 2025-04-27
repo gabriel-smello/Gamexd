@@ -1,7 +1,9 @@
 package com.gamexd.service;
 
 import com.gamexd.domain.entity.Game;
+import com.gamexd.domain.entity.Genre;
 import com.gamexd.repository.GameRepository;
+import com.gamexd.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,12 +11,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Autowired
     private IgdbService igdbService;
@@ -26,6 +33,8 @@ public class GameService {
         }
 
         Game game = igdbService.fetchGameFromApi(id);
+        fetchGenre(game);
+
         game.setUpdatedAt(LocalDateTime.now());
         return gameRepository.save(game);
     }
@@ -35,6 +44,7 @@ public class GameService {
         List<Game> result = new ArrayList<>();
 
         for (Game apiGame : apiGames) {
+            fetchGenre(apiGame);
             Optional<Game> local = gameRepository.findById(apiGame.getId());
 
             if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
@@ -53,6 +63,7 @@ public class GameService {
         List<Game> result = new ArrayList<>();
 
         for (Game apiGame : apiGames) {
+            fetchGenre(apiGame);
             Optional<Game> local = gameRepository.findById(apiGame.getId());
 
             if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
@@ -71,6 +82,7 @@ public class GameService {
         List<Game> result = new ArrayList<>();
 
         for (Game apiGame : apiGames) {
+            fetchGenre(apiGame);
             Optional<Game> local = gameRepository.findById(apiGame.getId());
 
             if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
@@ -86,5 +98,15 @@ public class GameService {
 
     private boolean isStale(LocalDateTime updatedAt) {
         return updatedAt == null || updatedAt.isBefore(LocalDateTime.now().minusDays(7));
+    }
+
+    private void fetchGenre(Game apiGame) {
+        if (apiGame.getGenres() != null) {
+            Set<Genre> managedGenres = apiGame.getGenres().stream()
+                    .map(genre -> genreRepository.findById(genre.getId())
+                            .orElseGet(() -> genreRepository.save(genre))) // se não achar, salva
+                    .collect(Collectors.toSet());
+            apiGame.setGenres(managedGenres);
+        }
     }
 }

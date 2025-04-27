@@ -2,10 +2,13 @@ package com.gamexd.mapper;
 
 import com.gamexd.domain.dto.GameDto;
 import com.gamexd.domain.entity.Game;
+import com.gamexd.domain.entity.Genre;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class GameMapper {
@@ -21,7 +24,10 @@ public class GameMapper {
         game.setSummary(dto.getSummary());
         game.setRating(dto.getRating());
         if (dto.getGenres() != null) {
-            game.setGenreName(dto.getGenres().get(0).getName());
+            Set<Genre> genres = dto.getGenres().stream()
+                    .map(GenreMapper::toEntity)
+                    .collect(Collectors.toSet());
+            game.setGenres(genres);
         }
 
         // Converte o timestamp de first_release_date para LocalDate

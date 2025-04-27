@@ -1,6 +1,7 @@
 package com.gamexd.controller;
 
 import com.gamexd.domain.entity.Game;
+import com.gamexd.repository.GameRepository;
 import com.gamexd.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ public class GameController {
 
     @Autowired
     private GameService gameService;
+    GameRepository gameRepository;
+
 
     @GetMapping("/card/{id}")
     public ResponseEntity<Game> getGame(@PathVariable Long id) {

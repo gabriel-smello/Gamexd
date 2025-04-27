@@ -28,8 +28,6 @@ public class IgdbService {
 
     @PostConstruct
     public void init() {
-        System.out.println("[IGDB] Inicializando WebClient com clientId=" + clientId);
-        System.out.println("[IGDB] Inicializando WebClient com token=" + token);
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.igdb.com/v4/games")
                 .defaultHeader("Client-ID", clientId)
@@ -49,7 +47,7 @@ public class IgdbService {
     }
 
     public List<Game> fetchTopTenGames() {
-        String query = "fields name,summary,rating,first_release_date,cover.url,genres.name;" +
+        String query = "fields name,summary,rating,first_release_date,cover.url,genres.id, genres.name;" +
                 " where rating != null;" +
                 " sort rating desc;" +
                 " limit 10;";
@@ -58,7 +56,6 @@ public class IgdbService {
                 .bodyValue(query)
                 .retrieve()
                 .bodyToFlux(GameDto.class)
-                .doOnNext(gameDto -> System.out.println("DTO de saida " + gameDto))
                 .map(gameMapper::toEntity)
                 .collectList()
                 .block();
@@ -68,7 +65,7 @@ public class IgdbService {
         long sixtyDaysAgo = Instant.now().minus(60, ChronoUnit.DAYS).getEpochSecond();
 
         String query = String.format("""
-        fields id, name, summary, rating, first_release_date, cover.url, genres.name, follows, hypes;
+        fields id, name, summary, rating, first_release_date, cover.url, genres.id, genres.name, follows, hypes;
         where first_release_date > %d & rating != null;
         sort popularity desc;
         limit 10;
@@ -90,7 +87,7 @@ public class IgdbService {
     }
 
     public List<Game> fetchNewlyGames() {
-        String query = "fields name,summary,rating,first_release_date,cover.url,genres.name;" +
+        String query = "fields name,summary,rating,first_release_date,cover.url,genres.id, genres.name;" +
                 " where rating != null;" +
                 " sort first_release_date desc;" +
                 " limit 10;";

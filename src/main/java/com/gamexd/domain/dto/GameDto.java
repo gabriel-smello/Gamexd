@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,9 +19,8 @@ public class GameDto {
     private Float rating;
     private Long first_release_date;
     private CoverDto cover;
-    private List<GenreDto> genres;
+    private Set<GenreDto> genres;
     private Double popularity;
     private Integer follows;
     private Integer hypes;
-    private Double trendingScore;
 }
