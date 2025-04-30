@@ -1,5 +1,6 @@
 package com.gamexd.service;
 
+import com.gamexd.domain.dto.GameCardDto;
 import com.gamexd.domain.dto.GameDto;
 import com.gamexd.domain.entity.Games;
 import com.gamexd.mapper.GameMapper;
@@ -30,19 +31,19 @@ public class GameService {
         return gameMapper.toDto(gameEntity);
     }
 
-    public List<GameDto> getTopTenGames() {
+    public List<GameCardDto> getTopTenGames() {
         List<Games> games = gameRepository.findTop10GamesByOrderByTotalRatingDesc();
-        return gameMapper.toDtoList(games);
+        return gameMapper.toGameCardDtoList(games);
     }
 
-    public List<GameDto> getNewlyGames() {
+    public List<GameCardDto> getNewlyGames() {
         List<Games> games = gameRepository.findTop10RecentGames();
-        return gameMapper.toDtoList(games);
+        return gameMapper.toGameCardDtoList(games);
     }
 
-    public List<GameDto> getTrendingGames() {
+    public List<GameCardDto> getTrendingGames() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Games> games = gameRepository.findTopTrendingGames(pageable);
-        return gameMapper.toDtoList(games);
+        return gameMapper.toGameCardDtoList(games);
     }
 }

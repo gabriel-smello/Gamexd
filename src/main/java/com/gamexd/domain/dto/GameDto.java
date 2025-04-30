@@ -19,8 +19,8 @@ public class GameDto {
     private String summary;
     private String storyline;
     private LocalDate release_date;
-    private Float total_rating;
-    private Integer rating_count;
+    private Float totalRating;
+    private Integer ratingCount;
     private String cover_url;
     private Set<GenreDto> genres;
     private Set<PlatformDto> platforms;
