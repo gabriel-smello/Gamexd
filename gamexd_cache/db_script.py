@@ -10,7 +10,7 @@ clientToken = os.getenv("igdb_token")
 db_config = {
     "host": "localhost",
     "user": "root",
-    "password": os.getenv("mysql_password"),
+    "password": os.getenv("MYSQL_PASSWORD"),
     "database": "igdb_cache"
 }
 
@@ -37,7 +37,8 @@ def save_game_data(games):
                 release_date = time.strftime('%Y-%m-%d', time.localtime(first_release_timestamp))
             except (OSError, ValueError):
                 release_date = None
-        rating = game.get('rating')
+        total_rating = game.get('total_rating')
+        rating_count = game.get('rating_count')
         cover_url = ''
 
         if 'cover' in game and 'url' in game['cover']:
@@ -45,16 +46,17 @@ def save_game_data(games):
 
                 # Inserir ou atualizar jogo
             cursor.execute("""
-                    INSERT INTO games (id, name, summary, storyline, release_date, rating, cover_url)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO games (id, name, summary, storyline, release_date, total_rating, rating_count, cover_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE
                         name=VALUES(name),
                         summary=VALUES(summary),
                         storyline=VALUES(storyline),
                         release_date=VALUES(release_date),
-                        rating=VALUES(rating),
+                        total_rating=VALUES(total_rating),
+                        rating_count=VALUES(rating_count),
                         cover_url=VALUES(cover_url)
-                """, (game_id, name, summary, storyline, release_date, rating, cover_url))
+                """, (game_id, name, summary, storyline, release_date, total_rating, rating_count, cover_url))
 
             # Inserir gêneros
             genres = game.get('genres', [])
@@ -87,7 +89,7 @@ def fetch_games():
     while True:
         # Corpo da requisição para a API
         data = f"""
-        fields id, name, summary, storyline, first_release_date, rating, cover.url, genres, platforms;
+        fields id, name, summary, storyline, first_release_date, cover.url, genres, platforms, rating_count, total_rating;
         limit {limit};
         offset {offset};
         """

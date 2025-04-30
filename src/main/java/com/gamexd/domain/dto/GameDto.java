@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -15,11 +17,13 @@ public class GameDto {
     private Long id;
     private String name;
     private String summary;
-    private Float rating;
-    private Long first_release_date;
-    private CoverDto cover;
+    private String storyline;
+    private LocalDate release_date;
+    private Float total_rating;
+    private Integer rating_count;
+    private String cover_url;
     private Set<GenreDto> genres;
-    private Double popularity;
-    private Integer follows;
-    private Integer hypes;
+    private Set<PlatformDto> platforms;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
 }

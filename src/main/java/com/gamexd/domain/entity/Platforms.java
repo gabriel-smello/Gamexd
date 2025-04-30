@@ -16,11 +16,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Genre {
+public class Platforms {
     @Id
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany(mappedBy = "platforms")
     @JsonIgnore
-    private Set<Game> games;
+    private Set<Games> games;
 }

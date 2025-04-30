@@ -1,15 +1,12 @@
 package com.gamexd.mapper;
 
 import com.gamexd.domain.dto.GenreDto;
-import com.gamexd.domain.entity.Genre;
+import com.gamexd.domain.entity.Genres;
+import org.mapstruct.Mapper;
 
-public class GenreMapper {
-    public static Genre toEntity(GenreDto dto) {
-        if (dto == null) return null;
+@Mapper(componentModel = "spring")
+public interface GenreMapper {
+    GenreDto toDto(Genres genre);
 
-        Genre genre = new Genre();
-        genre.setId(dto.getId());
-        genre.setName(dto.getName());
-        return genre;
-    }
+    Genres toEntity(GenreDto genreDto);
 }

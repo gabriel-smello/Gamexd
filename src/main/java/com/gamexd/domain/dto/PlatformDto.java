@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class CoverDto {
-    private long id;
-    private String url;
+@AllArgsConstructor
+public class PlatformDto {
+    private Long id;
+    private String name;
 }

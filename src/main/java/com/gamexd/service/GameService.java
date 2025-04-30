@@ -1,18 +1,16 @@
 package com.gamexd.service;
 
-import com.gamexd.domain.entity.Game;
-import com.gamexd.domain.entity.Genre;
+import com.gamexd.domain.dto.GameDto;
+import com.gamexd.domain.entity.Games;
+import com.gamexd.mapper.GameMapper;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -21,92 +19,30 @@ public class GameService {
     private GameRepository gameRepository;
 
     @Autowired
-    private GenreRepository genreRepository;
+    private GameMapper gameMapper;
 
     @Autowired
-    private IgdbService igdbService;
+    private GenreRepository genreRepository;
 
-    public Game getGameById(Long id) {
-        Optional<Game> local = gameRepository.findById(id);
-        if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
-            return local.get();
-        }
-
-        Game game = igdbService.fetchGameFromApi(id);
-        fetchGenre(game);
-
-        game.setUpdatedAt(LocalDateTime.now());
-        return gameRepository.save(game);
+    public GameDto getGameById(Long id) {
+        Games gameEntity = gameRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Game not found with id: " + id));
+        return gameMapper.toDto(gameEntity);
     }
 
-    public List<Game> getTopTenGames() {
-        List<Game> apiGames = igdbService.fetchTopTenGames();
-        List<Game> result = new ArrayList<>();
-
-        for (Game apiGame : apiGames) {
-            fetchGenre(apiGame);
-            Optional<Game> local = gameRepository.findById(apiGame.getId());
-
-            if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
-                result.add(local.get());
-            } else {
-                apiGame.setUpdatedAt(LocalDateTime.now());
-                result.add(gameRepository.save(apiGame));
-            }
-        }
-
-        return result;
+    public List<GameDto> getTopTenGames() {
+        List<Games> games = gameRepository.findTop10GamesByOrderByTotalRatingDesc();
+        return gameMapper.toDtoList(games);
     }
 
-    public List<Game> getNewlyGames() {
-        List<Game> apiGames = igdbService.fetchNewlyGames();
-        List<Game> result = new ArrayList<>();
-
-        for (Game apiGame : apiGames) {
-            fetchGenre(apiGame);
-            Optional<Game> local = gameRepository.findById(apiGame.getId());
-
-            if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
-                result.add(local.get());
-            } else {
-                apiGame.setUpdatedAt(LocalDateTime.now());
-                result.add(gameRepository.save(apiGame));
-            }
-        }
-
-        return result;
+    public List<GameDto> getNewlyGames() {
+        List<Games> games = gameRepository.findTop10RecentGames();
+        return gameMapper.toDtoList(games);
     }
 
-    public List<Game> getTrendingGames() {
-        List<Game> apiGames = igdbService.fetchTrendingGames();
-        List<Game> result = new ArrayList<>();
-
-        for (Game apiGame : apiGames) {
-            fetchGenre(apiGame);
-            Optional<Game> local = gameRepository.findById(apiGame.getId());
-
-            if (local.isPresent() && !isStale(local.get().getUpdatedAt())) {
-                result.add(local.get());
-            } else {
-                apiGame.setUpdatedAt(LocalDateTime.now());
-                result.add(gameRepository.save(apiGame));
-            }
-        }
-
-        return result;
-    }
-
-    private boolean isStale(LocalDateTime updatedAt) {
-        return updatedAt == null || updatedAt.isBefore(LocalDateTime.now().minusDays(7));
-    }
-
-    private void fetchGenre(Game apiGame) {
-        if (apiGame.getGenres() != null) {
-            Set<Genre> managedGenres = apiGame.getGenres().stream()
-                    .map(genre -> genreRepository.findById(genre.getId())
-                            .orElseGet(() -> genreRepository.save(genre))) // se não achar, salva
-                    .collect(Collectors.toSet());
-            apiGame.setGenres(managedGenres);
-        }
+    public List<GameDto> getTrendingGames() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Games> games = gameRepository.findTopTrendingGames(pageable);
+        return gameMapper.toDtoList(games);
     }
 }

@@ -5,7 +5,8 @@ CREATE TABLE games (
     summary TEXT,
     storyline TEXT,
     release_date DATE,
-    rating DECIMAL(5,2),
+    total_rating DECIMAL(5,2),
+    rating_count INT,
     cover_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -39,6 +40,7 @@ CREATE TABLE game_platforms (
 
 
 SELECT * FROM games;
+SELECT * FROM games WHERE release_date > DATEADD(month, -2, GETDATE()) ORDER BY rating_count DESC;
 SELECT * FROM genres;
 SELECT * FROM platforms;
 SELECT * FROM game_platforms;
