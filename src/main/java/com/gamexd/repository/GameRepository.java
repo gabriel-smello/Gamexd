@@ -17,4 +17,6 @@ public interface GameRepository extends JpaRepository<Games, Long> {
     List<Games> findTopTrendingGames(Pageable pageable);
 
     List<Games> findGamesByGenresId(Long genreId);
+
+    List<Games> findGamesByPlatformsId(Long platformId);
 }

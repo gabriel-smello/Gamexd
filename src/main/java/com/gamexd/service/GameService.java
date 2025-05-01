@@ -51,4 +51,9 @@ public class GameService {
         List<Games> games = gameRepository.findGamesByGenresId(genreId);
         return gameMapper.toGameCardDtoList(games);
     }
+
+    public List<GameCardDto> getGameByPlatform(Long platformId) {
+        List<Games> games = gameRepository.findGamesByPlatformsId(platformId);
+        return gameMapper.toGameCardDtoList(games);
+    }
 }
