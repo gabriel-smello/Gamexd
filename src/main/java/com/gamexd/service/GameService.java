@@ -46,4 +46,9 @@ public class GameService {
         List<Games> games = gameRepository.findTopTrendingGames(pageable);
         return gameMapper.toGameCardDtoList(games);
     }
+
+    public List<GameCardDto> getGameByGenre(Long genreId) {
+        List<Games> games = gameRepository.findGamesByGenresId(genreId);
+        return gameMapper.toGameCardDtoList(games);
+    }
 }
