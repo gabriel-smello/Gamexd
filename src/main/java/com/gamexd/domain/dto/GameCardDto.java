@@ -17,6 +17,6 @@ public class GameCardDto {
     private String name;
     private Set<GenreDto> genres;
     @JsonProperty("total_rating")
-    private Float totalRating;
+    private Double totalRating;
     private String cover_url;
 }

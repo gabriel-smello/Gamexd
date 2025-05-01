@@ -20,7 +20,8 @@ public class Games {
     @Column(columnDefinition = "TEXT")
     private String summary;
     private String storyline;
-    private LocalDate release_date;
+    @Column(name = "release_date")
+    private LocalDate releaseDate;
     @Column(name = "total_rating")
     private Double totalRating;
     @Column(name = "rating_count")

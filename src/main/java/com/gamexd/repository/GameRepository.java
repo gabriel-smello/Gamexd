@@ -14,7 +14,7 @@ public interface GameRepository extends JpaRepository<Games, Long>, JpaSpecifica
     @Query(value = "SELECT * FROM games WHERE release_date <= CURRENT_DATE ORDER BY release_date DESC LIMIT 10", nativeQuery = true)
     List<Games> findTop10RecentGames();
 
-    @Query(value = "SELECT * FROM games WHERE release_date > DATE_SUB(NOW(), INTERVAL 2 MONTH) ORDER BY rating_count DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM games WHERE release_date > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY rating_count DESC", nativeQuery = true)
     List<Games> findTopTrendingGames(Pageable pageable);
 
     List<Games> findGamesByGenresId(Long genreId);

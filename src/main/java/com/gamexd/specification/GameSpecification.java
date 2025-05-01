@@ -20,11 +20,11 @@ public class GameSpecification {
             }
 
             if (filter.getReleaseDateFrom() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("release_date"), filter.getReleaseDateFrom()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("releaseDate"), filter.getReleaseDateFrom()));
             }
 
             if (filter.getReleaseDateTo() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("release_date"), filter.getReleaseDateTo()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("releaseDate"), filter.getReleaseDateTo()));
             }
 
             if (filter.getMinRating() != null) {
