@@ -2,14 +2,15 @@ package com.gamexd.controller;
 
 import com.gamexd.domain.dto.GameCardDto;
 import com.gamexd.domain.dto.GameDto;
+import com.gamexd.domain.dto.GameFilterDto;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,5 +40,11 @@ public class GameController {
     @GetMapping("/trending")
     public ResponseEntity<List<GameCardDto>> getTrendingGames() {
         return ResponseEntity.ok(gameService.getTrendingGames());
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<GameCardDto>> getFilteredGames(@ModelAttribute GameFilterDto filter,
+                                                              @PageableDefault(size = 50) Pageable pageable) {
+        return ResponseEntity.ok(gameService.getFilteredGames(filter, pageable));
     }
 }

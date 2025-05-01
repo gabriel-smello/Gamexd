@@ -11,6 +11,8 @@ import java.util.List;
 public interface GameMapper {
     GameDto toDto(Games games);
 
+    GameCardDto toGameCardDto(Games games);
+
     List<GameDto> toDtoList(List<Games> games);
 
     List<GameCardDto> toGameCardDtoList(List<Games> games);

@@ -2,13 +2,17 @@ package com.gamexd.service;
 
 import com.gamexd.domain.dto.GameCardDto;
 import com.gamexd.domain.dto.GameDto;
+import com.gamexd.domain.dto.GameFilterDto;
 import com.gamexd.domain.entity.Games;
 import com.gamexd.mapper.GameMapper;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.GenreRepository;
+import com.gamexd.specification.GameSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,5 +59,11 @@ public class GameService {
     public List<GameCardDto> getGameByPlatform(Long platformId) {
         List<Games> games = gameRepository.findGamesByPlatformsId(platformId);
         return gameMapper.toGameCardDtoList(games);
+    }
+
+    public Page<GameCardDto> getFilteredGames(GameFilterDto filter, Pageable pageable) {
+        Specification<Games> specification = GameSpecification.withFilters(filter);
+        Page<Games> games = gameRepository.findAll(specification, pageable);
+        return games.map(gameMapper::toGameCardDto);
     }
 }

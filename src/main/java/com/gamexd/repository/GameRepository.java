@@ -3,11 +3,12 @@ package com.gamexd.repository;
 import com.gamexd.domain.entity.Games;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface GameRepository extends JpaRepository<Games, Long> {
+public interface GameRepository extends JpaRepository<Games, Long>, JpaSpecificationExecutor<Games> {
     List<Games> findTop10GamesByOrderByTotalRatingDesc();
 
     @Query(value = "SELECT * FROM games WHERE release_date <= CURRENT_DATE ORDER BY release_date DESC LIMIT 10", nativeQuery = true)
