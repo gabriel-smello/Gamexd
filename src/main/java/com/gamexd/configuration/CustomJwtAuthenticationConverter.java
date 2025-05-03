@@ -21,6 +21,6 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
         // subject = UUID do usuário (como você definiu no JWT)
         String userId = jwt.getSubject();
 
-        return new UsernamePasswordAuthenticationToken(userId, jwt, authorities);
+        return new UsernamePasswordAuthenticationToken(jwt, null, authorities);
     }
 }

@@ -11,6 +11,7 @@ import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,7 +30,9 @@ public class GameListService {
     @Autowired
     private GameListMapper gameListMapper;
 
-    public GameListDto createList(GameListCreateDto dto, UUID userId) {
+    public GameListDto createList(GameListCreateDto dto, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         GameList gameList = new GameList();
@@ -48,10 +51,13 @@ public class GameListService {
         return gameListMapper.toDtoList(gameListRepository.findAll());
     }
 
-    public GameListDto updateList(Long listId, GameListCreateDto dto, UUID userId) {
+    public GameListDto updateList(Long listId, GameListCreateDto dto, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
 
-        if (!gameList.getUser().getId().equals(userId)) {
+        if (!gameList.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
             throw new SecurityException("Você não tem permissão para editar esta lista");
         }
 

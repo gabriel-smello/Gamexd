@@ -6,10 +6,10 @@ import com.gamexd.service.GameListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/game-list")
@@ -18,8 +18,8 @@ public class GameListController {
     GameListService gameListService;
 
     @PostMapping
-    public ResponseEntity<GameListDto> createList(@RequestBody GameListCreateDto dto, @AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(gameListService.createList(dto, UUID.fromString(userId)));
+    public ResponseEntity<GameListDto> createList(@RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.createList(dto, jwt));
     }
 
     @GetMapping
@@ -28,7 +28,16 @@ public class GameListController {
     }
 
     @PutMapping("/{listId}")
-    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(gameListService.updateList(listId, dto, UUID.fromString(userId)));
+    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.updateList(listId, dto, jwt));
+    }
+
+    @GetMapping("/teste")
+    public ResponseEntity<?> teste(@AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
+        System.out.println(userId);
+        String scopes = jwt.getClaimAsString("scope");
+        System.out.println(scopes);
+        return ResponseEntity.ok().build();
     }
 }
