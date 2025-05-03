@@ -1,7 +1,8 @@
 package com.gamexd.controller;
 
-import com.gamexd.domain.entity.User;
+import com.gamexd.domain.dto.UserDto;
 import com.gamexd.repository.UserRepository;
+import com.gamexd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +17,13 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping()
-    public ResponseEntity<List<User>> listUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
+    public ResponseEntity<List<UserDto>> listUsers() {
+        return ResponseEntity.ok(userService.listUsers());
     }
 
 }
