@@ -69,7 +69,6 @@ public class TokenController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<Void> newUser(@RequestBody CreateUserDto dto) {
-        System.out.println("[REGISTER]: " + dto);
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 
         var userFromDb = userRepository.findByUsername(dto.username());
