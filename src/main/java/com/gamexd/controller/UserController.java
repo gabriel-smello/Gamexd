@@ -10,16 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
 
-@Controller("/users")
+@RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -31,9 +29,10 @@ public class UserController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     @Transactional
     public ResponseEntity<Void> newUser(@RequestBody CreateUserDto dto) {
+        System.out.println("[REGISTER]: " + dto);
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 
         var userFromDb = userRepository.findByUsername(dto.username());
@@ -48,7 +47,8 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
-@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping()
     public ResponseEntity<List<User>> listUsers() {
         return ResponseEntity.ok(userRepository.findAll());
