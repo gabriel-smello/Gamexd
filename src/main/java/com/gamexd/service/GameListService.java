@@ -47,4 +47,22 @@ public class GameListService {
     public List<GameListDto> getAllLists() {
         return gameListMapper.toDtoList(gameListRepository.findAll());
     }
+
+    public GameListDto updateList(Long listId, GameListCreateDto dto, UUID userId) {
+        GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
+
+        if (!gameList.getUser().getId().equals(userId)) {
+            throw new SecurityException("Você não tem permissão para editar esta lista");
+        }
+
+        gameList.setName(dto.getName());
+        gameList.setDescription(dto.getDescription());
+
+        if (dto.getGameIds() != null && !dto.getGameIds().isEmpty()) {
+            Set<Games> games = new HashSet<>(gameRepository.findAllById(dto.getGameIds()));
+            gameList.setGames(games);
+        }
+
+        return gameListMapper.toDto(gameListRepository.save(gameList));
+    }
 }

@@ -26,4 +26,9 @@ public class GameListController {
     public ResponseEntity<List<GameListDto>> getAllLists() {
         return ResponseEntity.ok(gameListService.getAllLists());
     }
+
+    @PutMapping("/{listId}")
+    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok(gameListService.updateList(listId, dto, UUID.fromString(userId)));
+    }
 }
