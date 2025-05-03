@@ -7,6 +7,7 @@ import com.gamexd.domain.entity.Games;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -14,4 +15,5 @@ import java.util.Set;
 public interface GameListMapper {
     @Mapping(source = "user.id", target = "userId")
     GameListDto toDto(GameList gameList);
+    List<GameListDto> toDtoList(List<GameList> gameList);
 }

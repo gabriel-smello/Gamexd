@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,5 +42,9 @@ public class GameListService {
             gameList.setGames(games);
         }
         return gameListMapper.toDto(gameListRepository.save(gameList));
+    }
+
+    public List<GameListDto> getAllLists() {
+        return gameListMapper.toDtoList(gameListRepository.findAll());
     }
 }
