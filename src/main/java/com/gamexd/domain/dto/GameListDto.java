@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameListDto {
-    private UUID id;
+    private Long id;
     private String name;
     private String description;
     private UUID userId;
