@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,12 +32,15 @@ public class SecurityConfig {
     private RSAPublicKey publicKey;
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthEntryPoint;
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http.
                 authorizeHttpRequests(authorize -> authorize
                         .requestMatchers( HttpMethod.POST, "/auth/*").permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthEntryPoint))
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
