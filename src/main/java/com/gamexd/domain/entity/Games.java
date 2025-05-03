@@ -19,6 +19,7 @@ public class Games {
     private String name;
     @Column(columnDefinition = "TEXT")
     private String summary;
+    @Column(columnDefinition = "TEXT")
     private String storyline;
     @Column(name = "release_date")
     private LocalDate releaseDate;
