@@ -32,6 +32,12 @@ public class GameListController {
         return ResponseEntity.ok(gameListService.updateList(listId, dto, jwt));
     }
 
+    @DeleteMapping("/{listId}")
+    public ResponseEntity<Void> deleteList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
+        gameListService.deleteList(listId, jwt);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/teste")
     public ResponseEntity<?> teste(@AuthenticationPrincipal Jwt jwt) {
         String userId = jwt.getSubject();
