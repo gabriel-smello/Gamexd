@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class TokenController {
     private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
 
 
