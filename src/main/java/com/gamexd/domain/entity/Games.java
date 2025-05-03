@@ -40,4 +40,6 @@ public class Games {
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "platform_id"))
     private Set<Platforms> platforms;
+    @ManyToMany(mappedBy = "games")
+    private Set<GameList> gameLists;
 }
