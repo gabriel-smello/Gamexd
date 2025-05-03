@@ -39,6 +39,9 @@ public class SecurityConfig {
         http.
                 authorizeHttpRequests(authorize -> authorize
                         .requestMatchers( HttpMethod.POST, "/auth/*").permitAll()
+                        .requestMatchers("/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthEntryPoint))
                 .csrf(csrf -> csrf.disable())
