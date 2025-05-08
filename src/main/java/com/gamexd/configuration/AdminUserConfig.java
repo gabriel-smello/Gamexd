@@ -32,7 +32,7 @@ public class AdminUserConfig implements CommandLineRunner {
 
         var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
 
-        var userAdmin = userRepository.findByUsername("admin");
+        var userAdmin = userRepository.findByEmail("admin");
 
         userAdmin.ifPresentOrElse(
                 (user) -> {
@@ -43,7 +43,7 @@ public class AdminUserConfig implements CommandLineRunner {
                         throw new IllegalStateException("ADMIN_PASSWORD environment variable is not set.");
                     }
                     var user = new User();
-                    user.setUsername("admin");
+                    user.setEmail("admin");
                     user.setPassword(passwordEncoder.encode(rawPassword));
                     user.setRole(Set.of(roleAdmin));
                     userRepository.save(user);

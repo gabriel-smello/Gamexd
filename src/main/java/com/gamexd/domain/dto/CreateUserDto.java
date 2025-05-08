@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record CreateUserDto(
         @NotBlank
         @Email(message = "E-mail invalid.")
-        String username,
+        String email,
 
         @NotBlank
         String password

@@ -45,7 +45,7 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        var user = userRepository.findByUsername(loginRequest.username());
+        var user = userRepository.findByEmail(loginRequest.email());
 
         if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)) {
             throw new BadCredentialsException("user or password is invalid!");
@@ -74,12 +74,12 @@ public class TokenController {
     public ResponseEntity<Void> newUser(@RequestBody @Valid CreateUserDto dto) {
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 
-        var userFromDb = userRepository.findByUsername(dto.username());
+        var userFromDb = userRepository.findByEmail(dto.email());
         if (userFromDb.isPresent()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         var user = new User();
-        user.setUsername(dto.username());
+        user.setEmail(dto.email());
         user.setPassword(bCryptPasswordEncoder.encode(dto.password()));
         user.setRole(Set.of(basicRole));
 
