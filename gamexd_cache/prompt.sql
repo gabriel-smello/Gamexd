@@ -1,5 +1,7 @@
 USE igdb_cache;
 
+SELECT * FROM game_lists;
+SELECT * FROM game_list_games;
 SELECT * FROM flyway_schema_history;
 SELECT * FROM users;
 SELECT * FROM roles;
