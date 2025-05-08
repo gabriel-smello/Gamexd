@@ -46,6 +46,7 @@ public class AdminUserConfig implements CommandLineRunner {
                     user.setEmail("admin");
                     user.setPassword(passwordEncoder.encode(rawPassword));
                     user.setRole(Set.of(roleAdmin));
+                    user.setEnabled(true);
                     userRepository.save(user);
                 }
         );

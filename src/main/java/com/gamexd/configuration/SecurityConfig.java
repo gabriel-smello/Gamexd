@@ -32,18 +32,16 @@ public class SecurityConfig {
     private RSAPublicKey publicKey;
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
-    @Autowired
-    private CustomAuthenticationEntryPoint customAuthEntryPoint;
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http.
                 authorizeHttpRequests(authorize -> authorize
                         .requestMatchers( HttpMethod.POST, "/auth/*").permitAll()
+                        .requestMatchers( HttpMethod.GET, "/auth/*").permitAll()
                         .requestMatchers("/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthEntryPoint))
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
