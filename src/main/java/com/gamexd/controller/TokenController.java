@@ -8,6 +8,7 @@ import com.gamexd.domain.entity.User;
 import com.gamexd.repository.RoleRepository;
 import com.gamexd.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +71,7 @@ public class TokenController {
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<Void> newUser(@RequestBody CreateUserDto dto) {
+    public ResponseEntity<Void> newUser(@RequestBody @Valid CreateUserDto dto) {
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 
         var userFromDb = userRepository.findByUsername(dto.username());
