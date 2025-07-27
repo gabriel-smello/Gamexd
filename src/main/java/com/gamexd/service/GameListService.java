@@ -51,6 +51,19 @@ public class GameListService {
         return gameListMapper.toDtoList(gameListRepository.findAll());
     }
 
+    public GameListDto getList(Long listId, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
+        GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
+
+        if (!gameList.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
+            throw new SecurityException("Você não tem permissão para acessar esta lista");
+        }
+
+        return gameListMapper.toDto(gameList);
+    }
+
     public GameListDto updateList(Long listId, GameListCreateDto dto, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");

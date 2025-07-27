@@ -27,6 +27,11 @@ public class GameListController {
         return ResponseEntity.ok(gameListService.getAllLists());
     }
 
+    @GetMapping("/{listId}")
+    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getList(listId, jwt));
+    }
+
     @PutMapping("/{listId}")
     public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(gameListService.updateList(listId, dto, jwt));
