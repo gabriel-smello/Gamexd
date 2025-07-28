@@ -6,6 +6,7 @@ import os
 
 clientId  = os.getenv("igdb_client-id")
 clientToken = os.getenv("igdb_token")
+
 # Configurações do banco de dados
 db_config = {
     "host": "localhost",
@@ -37,8 +38,6 @@ def save_game_data(games):
                 release_date = time.strftime('%Y-%m-%d', time.localtime(first_release_timestamp))
             except (OSError, ValueError):
                 release_date = None
-        total_rating = game.get('total_rating')
-        rating_count = game.get('rating_count')
         cover_url = ''
 
         if 'cover' in game and 'url' in game['cover']:
@@ -46,17 +45,15 @@ def save_game_data(games):
 
                 # Inserir ou atualizar jogo
             cursor.execute("""
-                    INSERT INTO games (id, name, summary, storyline, release_date, total_rating, rating_count, cover_url)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO games (id, name, summary, storyline, release_date, cover_url)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE
                         name=VALUES(name),
                         summary=VALUES(summary),
                         storyline=VALUES(storyline),
                         release_date=VALUES(release_date),
-                        total_rating=VALUES(total_rating),
-                        rating_count=VALUES(rating_count),
                         cover_url=VALUES(cover_url)
-                """, (game_id, name, summary, storyline, release_date, total_rating, rating_count, cover_url))
+                """, (game_id, name, summary, storyline, release_date, cover_url))
 
             # Inserir gêneros
             genres = game.get('genres', [])
@@ -89,7 +86,7 @@ def fetch_games():
     while True:
         # Corpo da requisição para a API
         data = f"""
-        fields id, name, summary, storyline, first_release_date, cover.url, genres, platforms, rating_count, total_rating;
+        fields id, name, summary, storyline, first_release_date, cover.url, genres, platforms;
         limit {limit};
         offset {offset};
         """
