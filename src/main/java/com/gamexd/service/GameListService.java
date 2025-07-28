@@ -5,6 +5,7 @@ import com.gamexd.domain.dto.GameListDto;
 import com.gamexd.domain.entity.GameList;
 import com.gamexd.domain.entity.Games;
 import com.gamexd.domain.entity.User;
+import com.gamexd.domain.enums.Visibility;
 import com.gamexd.mapper.GameListMapper;
 import com.gamexd.repository.GameListRepository;
 import com.gamexd.repository.GameRepository;
@@ -48,7 +49,18 @@ public class GameListService {
         return gameListMapper.toDto(gameListRepository.save(gameList));
     }
 
-    public GameListDto getGameList(Long listId, Jwt jwt) {
+    public List<GameListDto> getGameListsByUserId(UUID userId, Jwt jwt) {
+        String scopes = jwt.getClaimAsString("scope");
+
+        if (scopes.contains("ADMIN")){
+            return gameListMapper.toDtoList(gameListRepository.getGameListsByUserId(userId));
+        }
+
+        List<GameList> gameLists = gameListRepository.findByUserIdAndVisibility(userId, Visibility.PUBLIC);
+        return gameListMapper.toDtoList(gameLists);
+    }
+
+    public GameListDto getGameListById(Long listId, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
@@ -61,7 +73,7 @@ public class GameListService {
         return gameListMapper.toDto(gameList);
     }
 
-    public List<GameListDto> getGameListByUser(Jwt jwt) {
+    public List<GameListDto> getGameList(Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 

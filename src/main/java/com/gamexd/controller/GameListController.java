@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/game-list")
@@ -23,14 +24,19 @@ public class GameListController {
         return ResponseEntity.ok(gameListService.createList(dto, jwt));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<GameListDto>> getGameListsByUser(@PathVariable UUID userId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getGameListsByUserId(userId, jwt));
+    }
+
     @GetMapping
-    public ResponseEntity<List<GameListDto>> getGameListByUser(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(gameListService.getGameListByUser(jwt));
+    public ResponseEntity<List<GameListDto>> getGameList(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getGameList(jwt));
     }
 
     @GetMapping("/{listId}")
-    public ResponseEntity<GameListDto> getGameList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(gameListService.getGameList(listId, jwt));
+    public ResponseEntity<GameListDto> getGameListById(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getGameListById(listId, jwt));
     }
 
     @PutMapping("/{listId}")
