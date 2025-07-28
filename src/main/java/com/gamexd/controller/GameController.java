@@ -1,16 +1,19 @@
 package com.gamexd.controller;
 
-import com.gamexd.domain.dto.GameCardDto;
-import com.gamexd.domain.dto.GameDto;
-import com.gamexd.domain.dto.GameFilterDto;
+import com.gamexd.domain.dto.*;
+import com.gamexd.domain.entity.Review;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.service.GameService;
+import com.gamexd.service.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +24,10 @@ public class GameController {
 
     @Autowired
     private GameService gameService;
-    GameRepository gameRepository;
+    @Autowired
+    private GameRepository gameRepository;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/{id}")
     public ResponseEntity<GameDto> getGameById(@PathVariable Long id) {
@@ -50,5 +56,14 @@ public class GameController {
                                                                       sort = "releaseDate",
                                                                       direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(gameService.getFilteredGames(filter, pageable));
+    }
+
+    @PostMapping("/{gameId}/reviews")
+    public ResponseEntity<ReviewDto> createOrUpdateReview(
+            @PathVariable Long gameId,
+            @RequestBody @Valid CreateReviewDto dto,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        return ResponseEntity.ok(reviewService.createReview(dto, gameId, jwt));
     }
 }
