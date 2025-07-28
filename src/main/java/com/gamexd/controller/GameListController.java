@@ -3,6 +3,7 @@ package com.gamexd.controller;
 import com.gamexd.domain.dto.GameListCreateDto;
 import com.gamexd.domain.dto.GameListDto;
 import com.gamexd.service.GameListService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +19,7 @@ public class GameListController {
     GameListService gameListService;
 
     @PostMapping
-    public ResponseEntity<GameListDto> createGameList(@RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<GameListDto> createGameList(@RequestBody @Valid GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(gameListService.createList(dto, jwt));
     }
 
@@ -33,7 +34,7 @@ public class GameListController {
     }
 
     @PutMapping("/{listId}")
-    public ResponseEntity<GameListDto> updateGameList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<GameListDto> updateGameList(@PathVariable Long listId, @RequestBody @Valid GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(gameListService.updateGameList(listId, dto, jwt));
     }
 

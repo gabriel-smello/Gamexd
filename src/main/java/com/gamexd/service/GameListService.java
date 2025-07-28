@@ -39,6 +39,7 @@ public class GameListService {
 
         gameList.setName(dto.getName());
         gameList.setDescription(dto.getDescription());
+        gameList.setVisibility(dto.getVisibility());
         gameList.setUser(user);
         if (dto.getGameIds() != null && !dto.getGameIds().isEmpty()) {
             Set<Games> games = new HashSet<>(gameRepository.findAllById(dto.getGameIds()));
@@ -85,6 +86,7 @@ public class GameListService {
 
         gameList.setName(dto.getName());
         gameList.setDescription(dto.getDescription());
+        gameList.setVisibility(dto.getVisibility());
 
         if (dto.getGameIds() != null && !dto.getGameIds().isEmpty()) {
             Set<Games> games = new HashSet<>(gameRepository.findAllById(dto.getGameIds()));
