@@ -42,13 +42,4 @@ public class GameListController {
         gameListService.deleteGameList(listId, jwt);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/teste")
-    public ResponseEntity<?> teste(@AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        System.out.println(userId);
-        String scopes = jwt.getClaimAsString("scope");
-        System.out.println(scopes);
-        return ResponseEntity.ok().build();
-    }
 }
