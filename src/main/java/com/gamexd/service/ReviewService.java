@@ -41,7 +41,24 @@ public class ReviewService {
         review.setRating(dto.getRating());
         review.setText(dto.getText());
         review.setGame(game);
+        reviewRepository.save(review);
 
-        return reviewMapper.toDto(reviewRepository.save(review));
+        updateGameRatingStats(game);
+
+        return reviewMapper.toDto(review);
+    }
+
+    private void updateGameRatingStats(Games game) {
+        var reviews = reviewRepository.findAllByGame(game);
+
+        int count = reviews.size();
+        double average = count > 0
+                ? reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0)
+                : 0.0;
+
+        game.setRatingCount(count);
+        game.setTotalRating(average);
+
+        gameRepository.save(game);
     }
 }
