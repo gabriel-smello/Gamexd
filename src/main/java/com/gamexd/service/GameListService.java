@@ -52,7 +52,7 @@ public class GameListService {
     public List<GameListDto> getGameListsByUserId(UUID userId, Jwt jwt) {
         String scopes = jwt.getClaimAsString("scope");
 
-        if (scopes.contains("ADMIN")){
+        if (UUID.fromString(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
             return gameListMapper.toDtoList(gameListRepository.getGameListsByUserId(userId));
         }
 
