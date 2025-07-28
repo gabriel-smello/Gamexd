@@ -47,11 +47,7 @@ public class GameListService {
         return gameListMapper.toDto(gameListRepository.save(gameList));
     }
 
-    public List<GameListDto> getAllLists() {
-        return gameListMapper.toDtoList(gameListRepository.findAll());
-    }
-
-    public GameListDto getList(Long listId, Jwt jwt) {
+    public GameListDto getGameList(Long listId, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
@@ -64,7 +60,20 @@ public class GameListService {
         return gameListMapper.toDto(gameList);
     }
 
-    public GameListDto updateList(Long listId, GameListCreateDto dto, Jwt jwt) {
+    public List<GameListDto> getGameListByUser(Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
+        if (scopes.contains("ADMIN")) {
+            return gameListMapper.toDtoList(gameListRepository.findAll());
+        }
+
+        List<GameList> gameLists = gameListRepository.getGameListsByUserId(userId);
+
+        return gameListMapper.toDtoList(gameLists);
+    }
+
+    public GameListDto updateGameList(Long listId, GameListCreateDto dto, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
@@ -85,7 +94,7 @@ public class GameListService {
         return gameListMapper.toDto(gameListRepository.save(gameList));
     }
 
-    public void deleteList(Long listId, Jwt jwt) {
+    public void deleteGameList(Long listId, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 

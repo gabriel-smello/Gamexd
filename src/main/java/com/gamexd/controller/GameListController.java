@@ -18,28 +18,28 @@ public class GameListController {
     GameListService gameListService;
 
     @PostMapping
-    public ResponseEntity<GameListDto> createList(@RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<GameListDto> createGameList(@RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(gameListService.createList(dto, jwt));
     }
 
     @GetMapping
-    public ResponseEntity<List<GameListDto>> getAllLists() {
-        return ResponseEntity.ok(gameListService.getAllLists());
+    public ResponseEntity<List<GameListDto>> getGameListByUser(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getGameListByUser(jwt));
     }
 
     @GetMapping("/{listId}")
-    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(gameListService.getList(listId, jwt));
+    public ResponseEntity<GameListDto> getGameList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.getGameList(listId, jwt));
     }
 
     @PutMapping("/{listId}")
-    public ResponseEntity<GameListDto> updateList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(gameListService.updateList(listId, dto, jwt));
+    public ResponseEntity<GameListDto> updateGameList(@PathVariable Long listId, @RequestBody GameListCreateDto dto, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(gameListService.updateGameList(listId, dto, jwt));
     }
 
     @DeleteMapping("/{listId}")
-    public ResponseEntity<Void> deleteList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
-        gameListService.deleteList(listId, jwt);
+    public ResponseEntity<Void> deleteGameList(@PathVariable Long listId, @AuthenticationPrincipal Jwt jwt) {
+        gameListService.deleteGameList(listId, jwt);
         return ResponseEntity.noContent().build();
     }
 
