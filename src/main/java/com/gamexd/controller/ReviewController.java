@@ -37,4 +37,10 @@ public class ReviewController {
     public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(reviewService.getReviewsByUser(userId));
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId, @AuthenticationPrincipal Jwt jwt) {
+        reviewService.deleteReview(reviewId, jwt);
+        return ResponseEntity.noContent().build();
+    }
 }

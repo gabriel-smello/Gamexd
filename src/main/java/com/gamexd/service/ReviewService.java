@@ -76,4 +76,17 @@ public class ReviewService {
 
         return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
     }
+
+    public void deleteReview(Long reviewId, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
+
+        if (!review.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
+            throw new SecurityException("Você não tem permissão para deletar esta Review");
+        }
+
+        reviewRepository.delete(review);
+    }
 }
