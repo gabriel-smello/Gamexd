@@ -139,6 +139,8 @@ public class ReviewService {
             throw new SecurityException("Você não tem permissão para deletar esta Review");
         }
 
+        Games game = review.getGame();
         reviewRepository.delete(review);
+        updateGameRatingStats(game);
     }
 }
