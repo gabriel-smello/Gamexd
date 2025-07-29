@@ -1,5 +1,6 @@
 package com.gamexd.domain.entity;
 
+import com.gamexd.domain.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,9 @@ public class Review {
     private Double rating;
     @Column(columnDefinition = "TEXT")
     private String text;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

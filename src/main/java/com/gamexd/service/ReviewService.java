@@ -5,6 +5,7 @@ import com.gamexd.domain.dto.ReviewDto;
 import com.gamexd.domain.entity.Games;
 import com.gamexd.domain.entity.Review;
 import com.gamexd.domain.entity.User;
+import com.gamexd.domain.enums.Visibility;
 import com.gamexd.mapper.ReviewMapper;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.ReviewRepository;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Service
 public class ReviewService {
     @Autowired
@@ -41,6 +44,7 @@ public class ReviewService {
         review.setUser(user);
         review.setRating(dto.getRating());
         review.setText(dto.getText());
+        review.setVisibility(dto.getVisibility());
         review.setGame(game);
         reviewRepository.save(review);
 
@@ -63,18 +67,40 @@ public class ReviewService {
         gameRepository.save(game);
     }
 
-    public List<ReviewDto> getReviewsByGame(Long gameId) {
+    public List<ReviewDto> getReviewsByGame(Long gameId, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
         Games game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new EntityNotFoundException("Jogo não encontrado"));
 
-        return reviewMapper.toDtoList(reviewRepository.findAllByGame(game));
+
+        if (scopes.contains("ADMIN")) {
+            return reviewMapper.toDtoList(reviewRepository.findAllByGame(game));
+        }
+
+        List<Review> reviews = reviewRepository.findAllByGame(game).stream()
+                .filter(review ->
+                        review.getVisibility() == Visibility.PUBLIC ||
+                                review.getUser().getId().equals(userId)
+                )
+                .collect(Collectors.toList());
+
+        return reviewMapper.toDtoList(reviews);
     }
 
-    public List<ReviewDto> getReviewsByUser(UUID userId) {
+    public List<ReviewDto> getReviewsByUserId(UUID userId, Jwt jwt) {
+        String scopes = jwt.getClaimAsString("scope");
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
 
-        return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
+        if (UUID.fromString(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
+            return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
+        }
+
+        List<Review> reviews = reviewRepository.findByUserAndVisibility(user, Visibility.PUBLIC);
+        return reviewMapper.toDtoList(reviews);
     }
 
     public List<ReviewDto> getReview(Jwt jwt) {
@@ -96,7 +122,7 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("review não encontrada"));
 
-        if (!review.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
+        if (!review.getUser().getId().equals(userId) && !scopes.contains("ADMIN") && review.getVisibility() == Visibility.PRIVATE) {
             throw new SecurityException("Você não tem permissão para acessar esta review");
         }
 

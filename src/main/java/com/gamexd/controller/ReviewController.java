@@ -29,13 +29,13 @@ public class ReviewController {
     }
 
     @GetMapping("/games/{gameId}")
-    public ResponseEntity<List<ReviewDto>> getReviewsByGame(@PathVariable Long gameId) {
-        return ResponseEntity.ok(reviewService.getReviewsByGame(gameId));
+    public ResponseEntity<List<ReviewDto>> getReviewsByGame(@PathVariable Long gameId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(reviewService.getReviewsByGame(gameId, jwt));
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable UUID userId) {
-        return ResponseEntity.ok(reviewService.getReviewsByUser(userId));
+    public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable UUID userId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(reviewService.getReviewsByUserId(userId, jwt));
     }
 
     @GetMapping

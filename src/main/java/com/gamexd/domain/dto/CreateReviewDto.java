@@ -1,5 +1,6 @@
 package com.gamexd.domain.dto;
 
+import com.gamexd.domain.enums.Visibility;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ public class CreateReviewDto {
     @DecimalMin("0.0")
     @DecimalMax("5.0")
     private Double rating;
-
     private String text;
+    @NotNull
+    private Visibility visibility;
 }

@@ -52,11 +52,14 @@ public class GameListService {
     public List<GameListDto> getGameListsByUserId(UUID userId, Jwt jwt) {
         String scopes = jwt.getClaimAsString("scope");
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
+
         if (UUID.fromString(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
-            return gameListMapper.toDtoList(gameListRepository.getGameListsByUserId(userId));
+            return gameListMapper.toDtoList(gameListRepository.getGameListsByUser(user));
         }
 
-        List<GameList> gameLists = gameListRepository.findByUserIdAndVisibility(userId, Visibility.PUBLIC);
+        List<GameList> gameLists = gameListRepository.findByUserAndVisibility(user, Visibility.PUBLIC);
         return gameListMapper.toDtoList(gameLists);
     }
 
