@@ -2,6 +2,7 @@ package com.gamexd.repository;
 
 import com.gamexd.domain.entity.Games;
 import com.gamexd.domain.entity.Review;
+import com.gamexd.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUserIdAndGame(UUID userId, Games games);
 
     List<Review> findAllByGame(Games game);
+
+    List<Review> findAllByUser(User user);
 }

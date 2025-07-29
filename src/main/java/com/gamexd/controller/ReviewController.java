@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/reviews")
@@ -30,5 +31,10 @@ public class ReviewController {
     @GetMapping("/games/{gameId}")
     public ResponseEntity<List<ReviewDto>> getReviewsByGame(@PathVariable Long gameId) {
         return ResponseEntity.ok(reviewService.getReviewsByGame(gameId));
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<ReviewDto>> getReviewsByUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(reviewService.getReviewsByUser(userId));
     }
 }

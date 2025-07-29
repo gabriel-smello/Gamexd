@@ -69,4 +69,11 @@ public class ReviewService {
 
         return reviewMapper.toDtoList(reviewRepository.findAllByGame(game));
     }
+
+    public List<ReviewDto> getReviewsByUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
+
+        return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
+    }
 }
