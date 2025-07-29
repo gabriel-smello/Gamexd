@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByGame(Games game);
 
     List<Review> findAllByUser(User user);
+
+    List<Review> getAllByUserId(UUID userId);
 }

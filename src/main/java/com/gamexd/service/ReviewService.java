@@ -77,6 +77,32 @@ public class ReviewService {
         return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
     }
 
+    public List<ReviewDto> getReview(Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
+        if (scopes.contains("ADMIN")) {
+            return reviewMapper.toDtoList(reviewRepository.findAll());
+        }
+
+        List<Review> reviews = reviewRepository.getAllByUserId(userId);
+
+        return reviewMapper.toDtoList(reviews);
+    }
+
+    public ReviewDto getReviewById(Long reviewId, Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String scopes = jwt.getClaimAsString("scope");
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("review não encontrada"));
+
+        if (!review.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
+            throw new SecurityException("Você não tem permissão para acessar esta review");
+        }
+
+        return reviewMapper.toDto(review);
+    }
+
     public void deleteReview(Long reviewId, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");

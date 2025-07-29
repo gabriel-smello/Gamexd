@@ -38,6 +38,16 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsByUser(userId));
     }
 
+    @GetMapping
+    public ResponseEntity<List<ReviewDto>> getReview(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(reviewService.getReview(jwt));
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long reviewId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(reviewService.getReviewById(reviewId, jwt));
+    }
+
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId, @AuthenticationPrincipal Jwt jwt) {
         reviewService.deleteReview(reviewId, jwt);
