@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 @Service
 public class ReviewService {
@@ -26,7 +27,7 @@ public class ReviewService {
     @Autowired
     private ReviewMapper reviewMapper;
 
-    public ReviewDto createReview(CreateReviewDto dto, Long gameId, Jwt jwt) {
+    public ReviewDto createOrUpdateReview(CreateReviewDto dto, Long gameId, Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
 
         User user = userRepository.findById(userId)
@@ -60,5 +61,12 @@ public class ReviewService {
         game.setTotalRating(average);
 
         gameRepository.save(game);
+    }
+
+    public List<ReviewDto> getReviewsByGame(Long gameId) {
+        Games game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new EntityNotFoundException("Jogo não encontrado"));
+
+        return reviewMapper.toDtoList(reviewRepository.findAllByGame(game));
     }
 }

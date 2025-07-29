@@ -64,6 +64,11 @@ public class GameController {
             @RequestBody @Valid CreateReviewDto dto,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        return ResponseEntity.ok(reviewService.createReview(dto, gameId, jwt));
+        return ResponseEntity.ok(reviewService.createOrUpdateReview(dto, gameId, jwt));
+    }
+
+    @GetMapping("/{gameId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getReviewsByGame(@PathVariable Long gameId) {
+        return ResponseEntity.ok(reviewService.getReviewsByGame(gameId));
     }
 }
