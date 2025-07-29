@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/game-list")
@@ -25,7 +24,7 @@ public class GameListController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<GameListDto>> getGameListsByUser(@PathVariable UUID userId, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<List<GameListDto>> getGameListsByUser(@PathVariable Long userId, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(gameListService.getGameListsByUserId(userId, jwt));
     }
 

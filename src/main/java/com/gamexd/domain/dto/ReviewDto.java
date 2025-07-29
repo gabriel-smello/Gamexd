@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +18,7 @@ public class ReviewDto {
     private String text;
     @NotNull
     private Visibility visibility;
-    private UUID userId;
+    private Long userId;
     private Long gameId;
     private LocalDateTime createdAt;
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,6 +19,6 @@ public class GameListDto {
     private String description;
     @NotNull
     private Visibility visibility;
-    private UUID userId;
+    private Long userId;
     private Set<GameCardDto> games;
 }

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class GameListService {
@@ -32,7 +31,7 @@ public class GameListService {
     private GameListMapper gameListMapper;
 
     public GameListDto createList(GameListCreateDto dto, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
@@ -49,13 +48,13 @@ public class GameListService {
         return gameListMapper.toDto(gameListRepository.save(gameList));
     }
 
-    public List<GameListDto> getGameListsByUserId(UUID userId, Jwt jwt) {
+    public List<GameListDto> getGameListsByUserId(Long userId, Jwt jwt) {
         String scopes = jwt.getClaimAsString("scope");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
 
-        if (UUID.fromString(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
+        if (Long.valueOf(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
             return gameListMapper.toDtoList(gameListRepository.getGameListsByUser(user));
         }
 
@@ -64,7 +63,7 @@ public class GameListService {
     }
 
     public GameListDto getGameListById(Long listId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
@@ -77,7 +76,7 @@ public class GameListService {
     }
 
     public List<GameListDto> getGameList(Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         if (scopes.contains("ADMIN")) {
@@ -90,7 +89,7 @@ public class GameListService {
     }
 
     public GameListDto updateGameList(Long listId, GameListCreateDto dto, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
@@ -112,7 +111,7 @@ public class GameListService {
     }
 
     public void deleteGameList(Long listId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));

@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +30,7 @@ public class ReviewService {
     private ReviewMapper reviewMapper;
 
     public ReviewDto createOrUpdateReview(CreateReviewDto dto, Long gameId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
@@ -68,7 +67,7 @@ public class ReviewService {
     }
 
     public List<ReviewDto> getReviewsByGame(Long gameId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         Games game = gameRepository.findById(gameId)
@@ -89,13 +88,13 @@ public class ReviewService {
         return reviewMapper.toDtoList(reviews);
     }
 
-    public List<ReviewDto> getReviewsByUserId(UUID userId, Jwt jwt) {
+    public List<ReviewDto> getReviewsByUserId(Long userId, Jwt jwt) {
         String scopes = jwt.getClaimAsString("scope");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User não encontrado"));
 
-        if (UUID.fromString(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
+        if (Long.valueOf(jwt.getSubject()).equals(userId) || scopes.contains("ADMIN")){
             return reviewMapper.toDtoList(reviewRepository.findAllByUser(user));
         }
 
@@ -104,7 +103,7 @@ public class ReviewService {
     }
 
     public List<ReviewDto> getReview(Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         if (scopes.contains("ADMIN")) {
@@ -117,7 +116,7 @@ public class ReviewService {
     }
 
     public ReviewDto getReviewById(Long reviewId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("review não encontrada"));
@@ -130,7 +129,7 @@ public class ReviewService {
     }
 
     public void deleteReview(Long reviewId, Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+        Long userId = Long.valueOf(jwt.getSubject());
         String scopes = jwt.getClaimAsString("scope");
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));

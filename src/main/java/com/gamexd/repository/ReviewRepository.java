@@ -8,16 +8,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Optional<Review> findByUserIdAndGame(UUID userId, Games games);
+    Optional<Review> findByUserIdAndGame(Long userId, Games games);
 
     List<Review> findAllByGame(Games game);
 
     List<Review> findAllByUser(User user);
 
-    List<Review> getAllByUserId(UUID userId);
+    List<Review> getAllByUserId(Long userId);
 
     List<Review> findByUserAndVisibility(User user, Visibility visibility);
 
