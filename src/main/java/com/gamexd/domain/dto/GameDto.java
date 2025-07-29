@@ -28,6 +28,4 @@ public class GameDto {
     private String cover_url;
     private Set<GenreDto> genres;
     private Set<PlatformDto> platforms;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 }
