@@ -66,7 +66,7 @@ public class GameListService {
 
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
 
-        if (!gameList.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
+        if (!gameList.getUser().getId().equals(userId) && !scopes.contains("ADMIN") && gameList.getVisibility() == Visibility.PRIVATE) {
             throw new SecurityException("Você não tem permissão para acessar esta lista");
         }
 
