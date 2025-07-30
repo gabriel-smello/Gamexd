@@ -6,11 +6,12 @@ import com.gamexd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -26,4 +27,27 @@ public class UserController {
         return ResponseEntity.ok(userService.listUsers());
     }
 
+    @PostMapping("/{userId}/follow")
+    public ResponseEntity<Void> followUser(@PathVariable Long userId, @AuthenticationPrincipal Jwt jwt) {
+        userService.followUser(userId, jwt);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{userId}/follow")
+    public ResponseEntity<Void> unfollowUser(@PathVariable Long userId, @AuthenticationPrincipal Jwt jwt) {
+        userService.unfollowUser(userId, jwt);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/followers")
+    public ResponseEntity<Set<UserDto>> getFollowers(@PathVariable Long userId) {
+
+        return ResponseEntity.ok(userService.getFollowers(userId));
+    }
+
+    @GetMapping("/{userId}/following")
+    public ResponseEntity<Set<UserDto>> getFollowing(@PathVariable Long userId) {
+
+        return ResponseEntity.ok(userService.getFollowing(userId));
+    }
 }
