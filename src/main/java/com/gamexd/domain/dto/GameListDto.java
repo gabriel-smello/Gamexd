@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 @Getter
 @Setter
@@ -21,4 +22,5 @@ public class GameListDto {
     private Visibility visibility;
     private Long userId;
     private Set<GameCardDto> games;
+    private LocalDateTime createdAt;
 }

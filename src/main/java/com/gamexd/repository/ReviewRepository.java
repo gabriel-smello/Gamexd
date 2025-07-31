@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUserIdAndGame(Long userId, Games games);
@@ -21,5 +22,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByUserAndVisibility(User user, Visibility visibility);
 
     List<Review> findByGameAndVisibility(Games games, Visibility visibility);
+
+    List<Review> findByUserInAndVisibilityOrderByCreatedAtDesc(Set<User> users, Visibility visibility);
 
 }
