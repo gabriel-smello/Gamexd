@@ -2,11 +2,14 @@ package com.gamexd.service;
 
 import com.gamexd.domain.dto.CreateReviewDto;
 import com.gamexd.domain.dto.ReviewDto;
+import com.gamexd.domain.entity.Feed;
 import com.gamexd.domain.entity.Games;
 import com.gamexd.domain.entity.Review;
 import com.gamexd.domain.entity.User;
+import com.gamexd.domain.enums.FeedType;
 import com.gamexd.domain.enums.Visibility;
 import com.gamexd.mapper.ReviewMapper;
+import com.gamexd.repository.FeedRepository;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.ReviewRepository;
 import com.gamexd.repository.UserRepository;
@@ -15,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +33,8 @@ public class ReviewService {
     private UserRepository userRepository;
     @Autowired
     private ReviewMapper reviewMapper;
+    @Autowired
+    private FeedRepository feedRepository;
 
     public ReviewDto createOrUpdateReview(CreateReviewDto dto, Long gameId, Jwt jwt) {
         Long userId = Long.valueOf(jwt.getSubject());
@@ -37,8 +44,10 @@ public class ReviewService {
         Games game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new EntityNotFoundException("Jogo não encontrado"));
 
-        Review review = reviewRepository.findByUserIdAndGame(userId, game)
-                .orElse(new Review());
+        Optional<Review> existingReviewOpt = reviewRepository.findByUserIdAndGame(userId, game);
+
+        boolean isUpdate = existingReviewOpt.isPresent();
+        Review review = existingReviewOpt.orElse(new Review());
 
         review.setUser(user);
         review.setRating(dto.getRating());
@@ -48,7 +57,7 @@ public class ReviewService {
         reviewRepository.save(review);
 
         updateGameRatingStats(game);
-
+        logReviewEvent(user, review, isUpdate);
         return reviewMapper.toDto(review);
     }
 
@@ -141,5 +150,15 @@ public class ReviewService {
         Games game = review.getGame();
         reviewRepository.delete(review);
         updateGameRatingStats(game);
+    }
+
+    private void logReviewEvent(User user, Review review, boolean isUpdate) {
+        if (review.getVisibility() != Visibility.PUBLIC) return;
+        Feed event = new Feed();
+        event.setActor(user);
+        event.setReview(review);
+        event.setTimestamp(LocalDateTime.now());
+        event.setType(isUpdate ? FeedType.REVIEW_UPDATED : FeedType.REVIEW_CREATED);
+        feedRepository.save(event);
     }
 }

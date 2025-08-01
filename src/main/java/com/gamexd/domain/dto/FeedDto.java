@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedDto {
+    private Long id;
     private String type;
     private String username;
     private String description;

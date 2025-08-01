@@ -2,11 +2,11 @@ package com.gamexd.service;
 
 import com.gamexd.domain.dto.GameListCreateDto;
 import com.gamexd.domain.dto.GameListDto;
-import com.gamexd.domain.entity.GameList;
-import com.gamexd.domain.entity.Games;
-import com.gamexd.domain.entity.User;
+import com.gamexd.domain.entity.*;
+import com.gamexd.domain.enums.FeedType;
 import com.gamexd.domain.enums.Visibility;
 import com.gamexd.mapper.GameListMapper;
+import com.gamexd.repository.FeedRepository;
 import com.gamexd.repository.GameListRepository;
 import com.gamexd.repository.GameRepository;
 import com.gamexd.repository.UserRepository;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,8 @@ public class GameListService {
     private GameRepository gameRepository;
     @Autowired
     private GameListMapper gameListMapper;
+    @Autowired
+    private FeedRepository feedRepository;
 
     public GameListDto createList(GameListCreateDto dto, Jwt jwt) {
         Long userId = Long.valueOf(jwt.getSubject());
@@ -45,7 +48,9 @@ public class GameListService {
             Set<Games> games = new HashSet<>(gameRepository.findAllById(dto.getGameIds()));
             gameList.setGames(games);
         }
-        return gameListMapper.toDto(gameListRepository.save(gameList));
+        gameListRepository.save(gameList);
+        logGameListEvent(user, gameList, false);
+        return gameListMapper.toDto(gameList);
     }
 
     public List<GameListDto> getGameListsByUserId(Long userId, Jwt jwt) {
@@ -94,6 +99,9 @@ public class GameListService {
 
         GameList gameList = gameListRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Lista não encontrada"));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
         if (!gameList.getUser().getId().equals(userId) && !scopes.contains("ADMIN")) {
             throw new SecurityException("Você não tem permissão para editar esta lista");
         }
@@ -106,8 +114,9 @@ public class GameListService {
             Set<Games> games = new HashSet<>(gameRepository.findAllById(dto.getGameIds()));
             gameList.setGames(games);
         }
-
-        return gameListMapper.toDto(gameListRepository.save(gameList));
+        gameListRepository.save(gameList);
+        logGameListEvent(user, gameList, true);
+        return gameListMapper.toDto(gameList);
     }
 
     public void deleteGameList(Long listId, Jwt jwt) {
@@ -121,5 +130,15 @@ public class GameListService {
         }
 
         gameListRepository.delete(gameList);
+    }
+
+    private void logGameListEvent(User user, GameList gameList, boolean isUpdate) {
+        if (gameList.getVisibility() != Visibility.PUBLIC) return;
+        Feed event = new Feed();
+        event.setActor(user);
+        event.setGameList(gameList);
+        event.setTimestamp(LocalDateTime.now());
+        event.setType(isUpdate ? FeedType.GAMELIST_UPDATED : FeedType.GAMELIST_CREATED);
+        feedRepository.save(event);
     }
 }
