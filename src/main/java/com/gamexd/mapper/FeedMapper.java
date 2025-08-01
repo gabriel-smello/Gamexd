@@ -6,20 +6,12 @@ import com.gamexd.domain.entity.Feed;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ReviewMapper.class, GameListMapper.class})
 public interface FeedMapper {
-    @Mapping(target = "type", constant = "review")
+    @Mapping(target = "type", constant = "REVIEW")
     @Mapping(source = "actor.email", target = "username")
-    @Mapping(source = "review.id", target = "reviewId")
-    @Mapping(source = "review.rating", target = "rating")
-    @Mapping(source = "review.text", target = "text")
-    @Mapping(source = "review.game.id", target = "gameId")
-    @Mapping(source = "review.game.name", target = "gameName")
     FeedReviewDto toReviewDto(Feed feed);
-    @Mapping(target = "type", constant = "gameList")
+    @Mapping(target = "type", constant = "GAMELIST")
     @Mapping(source = "actor.email", target = "username")
-    @Mapping(source = "gameList.id", target = "gameListId")
-    @Mapping(source = "gameList.name", target = "gameListName")
-    @Mapping(source = "gameList.description", target = "description")
     FeedGameListDto toGameListDto(Feed feed);
 }

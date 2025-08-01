@@ -10,7 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedGameListDto extends FeedDto{
-    private Long gameListId;
-    private String gameListName;
-    private String description;
+    private GameListDto gameList;
 }

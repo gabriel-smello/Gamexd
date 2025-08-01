@@ -10,9 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedReviewDto extends FeedDto{
-    private Long reviewId;
-    private Long gameId;
-    private String gameName;
-    private Double rating;
-    private String text;
+    private ReviewDto review;
 }
