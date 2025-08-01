@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedDto {
-    private Long id;
-    private String type;
-    private String username;
-    private LocalDateTime timestamp;
+public class FeedReviewDto extends FeedDto{
+    private Long reviewId;
+    private Long gameId;
+    private String gameName;
+    private Double rating;
+    private String text;
 }
