@@ -23,27 +23,28 @@ public class CommentController {
                                                              @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.createCommentForReview(reviewId, dto, jwt));
     }
+
     @PostMapping("/gameList/{gameListId}")
     public ResponseEntity<CommentDto> createCommentForGameList(@PathVariable Long gameListId,
-                                                             @RequestBody CreateCommentDto dto,
-                                                             @AuthenticationPrincipal Jwt jwt) {
+                                                               @RequestBody CreateCommentDto dto,
+                                                               @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.createCommentForGameList(gameListId, dto, jwt));
     }
 
     @GetMapping("/review/{reviewId}")
-    public ResponseEntity<List<CommentDto>> getCommentsForReview(@PathVariable Long reviewId) {
-        return ResponseEntity.ok(commentService.getCommentsForReview(reviewId));
+    public ResponseEntity<List<CommentDto>> getCommentsForReview(@PathVariable Long reviewId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(commentService.getCommentsForReview(reviewId, jwt));
     }
 
     @GetMapping("/gameList/{gameListId}")
-    public ResponseEntity<List<CommentDto>> getCommentsForGameList(@PathVariable Long gameListId) {
-        return ResponseEntity.ok(commentService.getCommentsForGameList(gameListId));
+    public ResponseEntity<List<CommentDto>> getCommentsForGameList(@PathVariable Long gameListId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(commentService.getCommentsForGameList(gameListId, jwt));
     }
 
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Long commentId,
-                                                            @RequestBody CreateCommentDto dto,
-                                                            @AuthenticationPrincipal Jwt jwt) {
+                                                    @RequestBody CreateCommentDto dto,
+                                                    @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.updateComment(commentId, dto, jwt));
     }
 

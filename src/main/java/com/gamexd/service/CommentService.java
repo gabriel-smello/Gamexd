@@ -6,6 +6,7 @@ import com.gamexd.domain.entity.Comment;
 import com.gamexd.domain.entity.GameList;
 import com.gamexd.domain.entity.Review;
 import com.gamexd.domain.entity.User;
+import com.gamexd.domain.enums.Visibility;
 import com.gamexd.mapper.CommentMapper;
 import com.gamexd.repository.CommentRepository;
 import com.gamexd.repository.GameListRepository;
@@ -36,6 +37,9 @@ public class CommentService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
+        if (review.getVisibility() != Visibility.PUBLIC && !review.getUser().getId().equals(userId)) {
+            throw new SecurityException("Você não tem acesso a essa review.");
+        }
 
         Comment comment = new Comment();
         comment.setText(dto.getText());
@@ -51,6 +55,9 @@ public class CommentService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         GameList gameList = gameListRepository.findById(gameListId)
                 .orElseThrow(() -> new EntityNotFoundException("Game List não encontrada"));
+        if (gameList.getVisibility() != Visibility.PUBLIC && !gameList.getUser().getId().equals(userId)) {
+            throw new SecurityException("Você não tem acesso a essa lista.");
+        }
 
         Comment comment = new Comment();
         comment.setText(dto.getText());
@@ -60,11 +67,26 @@ public class CommentService {
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
-    public List<CommentDto> getCommentsForReview(Long reviewId) {
+    public List<CommentDto> getCommentsForReview(Long reviewId, Jwt jwt) {
+        Long userId = Long.valueOf(jwt.getSubject());
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
+
+        if (review.getVisibility() != Visibility.PUBLIC && !review.getUser().getId().equals(userId)) {
+            throw new SecurityException("Você não tem acesso a essa review.");
+        }
         return commentMapper.toDtoList(commentRepository.findByReviewId(reviewId));
     }
 
-    public List<CommentDto> getCommentsForGameList(Long gameListId) {
+    public List<CommentDto> getCommentsForGameList(Long gameListId, Jwt jwt) {
+        Long userId = Long.valueOf(jwt.getSubject());
+
+        GameList gameList = gameListRepository.findById(gameListId)
+                .orElseThrow(() -> new EntityNotFoundException("Game List não encontrada"));
+        if (gameList.getVisibility() != Visibility.PUBLIC && !gameList.getUser().getId().equals(userId)) {
+            throw new SecurityException("Você não tem acesso a essa lista.");
+        }
         return commentMapper.toDtoList(commentRepository.findByGameListId(gameListId));
     }
 
