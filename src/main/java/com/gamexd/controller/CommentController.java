@@ -21,4 +21,10 @@ public class CommentController {
                                                              @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.createCommentForReview(reviewId, dto, jwt));
     }
+    @PostMapping("/gameList/{gameListId}")
+    public ResponseEntity<CommentDto> createCommentForGameList(@PathVariable Long gameListId,
+                                                             @RequestBody CreateCommentDto dto,
+                                                             @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(commentService.createCommentForGameList(gameListId, dto, jwt));
+    }
 }
