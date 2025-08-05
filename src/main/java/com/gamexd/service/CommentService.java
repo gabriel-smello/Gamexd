@@ -57,4 +57,31 @@ public class CommentService {
 
         return commentMapper.toDto(commentRepository.save(comment));
     }
+
+    public CommentDto updateComment(Long commentId, CreateCommentDto dto, Jwt jwt) {
+        Long userId = Long.valueOf(jwt.getSubject());
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comentário não encontrado"));
+
+        if (!comment.getAuthor().getId().equals(userId)) {
+            throw new SecurityException("Você não tem permissão para editar este comentário.");
+        }
+
+        comment.setText(dto.getText());
+        return commentMapper.toDto(commentRepository.save(comment));
+    }
+
+    public void deleteComment(Long commentId, Jwt jwt) {
+        Long userId = Long.valueOf(jwt.getSubject());
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comentário não encontrado"));
+
+        if (!comment.getAuthor().getId().equals(userId)) {
+            throw new SecurityException("Você não tem permissão para deletar este comentário.");
+        }
+
+        commentRepository.delete(comment);
+    }
 }

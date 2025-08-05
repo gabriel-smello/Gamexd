@@ -27,4 +27,18 @@ public class CommentController {
                                                              @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.createCommentForGameList(gameListId, dto, jwt));
     }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<CommentDto> updateComment(@PathVariable Long commentId,
+                                                            @RequestBody CreateCommentDto dto,
+                                                            @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(commentService.updateComment(commentId, dto, jwt));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        commentService.deleteComment(commentId, jwt);
+        return ResponseEntity.noContent().build();
+    }
 }
