@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommentService {
     @Autowired
@@ -56,6 +58,14 @@ public class CommentService {
         comment.setGameList(gameList);
 
         return commentMapper.toDto(commentRepository.save(comment));
+    }
+
+    public List<CommentDto> getCommentsForReview(Long reviewId) {
+        return commentMapper.toDtoList(commentRepository.findByReviewId(reviewId));
+    }
+
+    public List<CommentDto> getCommentsForGameList(Long gameListId) {
+        return commentMapper.toDtoList(commentRepository.findByGameListId(gameListId));
     }
 
     public CommentDto updateComment(Long commentId, CreateCommentDto dto, Jwt jwt) {

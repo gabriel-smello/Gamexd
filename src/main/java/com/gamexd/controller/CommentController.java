@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
@@ -26,6 +28,16 @@ public class CommentController {
                                                              @RequestBody CreateCommentDto dto,
                                                              @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(commentService.createCommentForGameList(gameListId, dto, jwt));
+    }
+
+    @GetMapping("/review/{reviewId}")
+    public ResponseEntity<List<CommentDto>> getCommentsForReview(@PathVariable Long reviewId) {
+        return ResponseEntity.ok(commentService.getCommentsForReview(reviewId));
+    }
+
+    @GetMapping("/gameList/{gameListId}")
+    public ResponseEntity<List<CommentDto>> getCommentsForGameList(@PathVariable Long gameListId) {
+        return ResponseEntity.ok(commentService.getCommentsForGameList(gameListId));
     }
 
     @PutMapping("/{commentId}")
