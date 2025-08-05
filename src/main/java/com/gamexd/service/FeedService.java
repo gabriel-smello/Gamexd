@@ -4,8 +4,6 @@ import com.gamexd.domain.dto.FeedDto;
 import com.gamexd.domain.entity.User;
 import com.gamexd.mapper.FeedMapper;
 import com.gamexd.repository.FeedRepository;
-import com.gamexd.repository.GameListRepository;
-import com.gamexd.repository.ReviewRepository;
 import com.gamexd.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
